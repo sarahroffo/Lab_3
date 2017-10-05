@@ -2,5 +2,116 @@
 title: "Lab 3"
 author: "Sarah Roffo"
 date: "10/4/2017"
-output: html_document
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
 ---
+
+```{r setup, include=FALSE}
+library(MASS)
+df <- Cars93
+```
+
+##Question 1 
+
+###Question 1a: Randomly select 40 cars as the training dataset and the remaining 53 cars as the test dataset
+
+```{r}
+set.seed(1234)
+training_dataset <- sample(1:nrow(df), 40, replace = FALSE)
+index <- as.numeric(row.names(df))
+test_dataset <- index[- training_dataset]
+training_df <- df[training_dataset,]
+training_df ## Training Dataset
+test_df <- df[test_dataset,]
+test_df ## Test Dataset
+```
+
+###Question 1b: Save both datasets as csv files
+
+```{r}
+write.csv(training_df, file = "training_df.csv")
+write.csv(test_df, file = "test_df.csv")
+```
+
+###Question 1c: Find out the number of USA and non-USA cars in the training dataset
+
+```{r}
+USA_training_df <- training_df[training_df$Origin == "USA",]
+nrow(USA_training_df) ##number of USA cars in the training dataset
+non_USA_training_df <- training_df[training_df$Origin == "non-USA",]
+nrow(non_USA_training_df) ##number of non-USA cars in the training dataset
+```
+
+##Question 2
+
+###Question 2a: Assume that the probability of boy and girl births are 0.515 and 0.485, respectively. Use the sample() function to simulate 10 births and print out the result. How many boys and girls do you get out of 10 births?
+
+```{r}
+births <- sample(c("boy", "girl"), size = 10, replace = TRUE, prob = c(0.515, 0.485))
+table(births)
+```
+
+###Question 2b: Simulate 10,000 births. How many boys and girls do you get out of 10,000 births?
+
+```{r}
+many_births <- sample(c("boy", "girl"), size = 10000, replace = TRUE, prob = c(0.515, 0.485))
+table(many_births)
+```
+
+##Question 3
+
+###Question 3a: Assume that the probabilities of boy and girl births are 0.515 and 0.485, respectively. What is the probability of having exactly 3 boys out of 10 births?
+
+```{r}
+prob_3_boys <- dbinom(3, size = 10, prob = 0.515)
+prob_3_boys ##probability of exactly 3 boys out of 10 births
+```
+
+###Question 3b: What is the probability of having 8 or more boys out of 10 births?
+
+```{r}
+prob_8_or_more <- pbinom(7, size = 10, prob = 0.515, lower.tail = FALSE)
+prob_8_or_more ##probability of 8 or more boys out of 10 births
+```
+
+###Question 3c: Plot both the density function and cumulative probability function of the number of boy births out of 10.
+
+```{r}
+n <- 10
+x <- seq(from = -10, to = 10, length.out = 100)
+y <- dnorm(x)
+plot(x,y, type = "l", pch = 16, col = "blue") ## Density Function
+
+n <- 10
+x <- seq(from = -10, to = 10, length.out = 100)
+y <- pnorm(x)
+plot(x,y, type = "l", pch = 16, col = "red") ## Cumulative Probability Function
+```
+
+##Question 4
+
+###Question 4a: Cars randomly arrive at a traffic light at the rate of five every ten seconds. What is the probability that exactly 4 cars arrive in the next ten seconds?
+
+```{r}
+prob_exactly_4 <- dpois(4, lambda = 5)
+prob_exactly_4 ## Probability that exactly 4 cars arrive in next ten seconds
+```
+
+###Question 4b: What is the probability that more than 5 cars arrive in the next ten seconds?
+
+```{r}
+prob_more_than_5 <- ppois(5, lambda = 5, lower.tail = FALSE)
+prob_more_than_5 ## Probability that more than 5 cars arrive in next ten seconds
+```
+
+###Question 4c: Plot the density function of 0-20 cars arriving in the next 20 seconds
+
+```{r}
+n <- 20
+x <- seq(from = -20, to = 20)
+y <- dpois(x, lambda = 5)
+plot(x, y, type = "l", pch = 16, col = "blue") ## Density Function
+```
+
